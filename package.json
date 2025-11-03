@@ -24,7 +24,9 @@
     "lint": "turbo lint",
     "type-check": "turbo type-check",
     "test": "turbo test",
-    "postinstall": "turbo build --filter=shared --filter=server"
+    "postinstall": "turbo build --filter=shared --filter=server",
+    "docker:build": "bun run build:single && docker build -t starter-bhvr .",
+    "docker:run": "docker run -p 3000:3000 starter-bhvr"
   },
   "keywords": [
     "bun",

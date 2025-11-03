@@ -4,10 +4,9 @@ import { serveStatic } from "hono/bun";
 import type { ApiResponse } from "shared/dist";
 
 export const app = new Hono()
-
   .use(cors())
 
-  .get("/", (c) => {
+  .get("/main", (c) => {
     return c.text("Hello Hono!");
   })
 

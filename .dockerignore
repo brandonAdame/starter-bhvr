@@ -1,0 +1,66 @@
+# Dependencies
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+.pnp
+.pnp.js
+
+# Build outputs (will be built inside Docker)
+dist
+build
+coverage
+.turbo
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Docker
+Dockerfile
+.dockerignore
+docker-compose*.yml
+
+# Environment files (use Docker secrets/env vars instead)
+.env
+.env.*
+.env*.local
+!.env.example
+
+# IDE and editor files
+.vscode
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.DS_Store
+
+# Documentation and non-essential files
+README.md
+LICENSE
+*.md
+docs
+
+# Testing
+coverage
+*.test.ts
+*.test.tsx
+*.test.js
+*.spec.ts
+*.spec.tsx
+*.spec.js
+__tests__
+.jest
+
+# CI/CD
+.github
+.gitlab-ci.yml
+.travis.yml
+.circleci
+
+# Bun specific
+bun.lockb
