@@ -9,12 +9,24 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as BhvrRouteImport } from './routes/bhvr'
+import { Route as TeamRosterRouteImport } from './routes/teamRoster'
+import { Route as RegisterRouteImport } from './routes/register'
+import { Route as LoginRouteImport } from './routes/login'
 import { Route as IndexRouteImport } from './routes/index'
 
-const BhvrRoute = BhvrRouteImport.update({
-  id: '/bhvr',
-  path: '/bhvr',
+const TeamRosterRoute = TeamRosterRouteImport.update({
+  id: '/teamRoster',
+  path: '/teamRoster',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegisterRoute = RegisterRouteImport.update({
+  id: '/register',
+  path: '/register',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoginRoute = LoginRouteImport.update({
+  id: '/login',
+  path: '/login',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -25,37 +37,59 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/bhvr': typeof BhvrRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/teamRoster': typeof TeamRosterRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/bhvr': typeof BhvrRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/teamRoster': typeof TeamRosterRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/bhvr': typeof BhvrRoute
+  '/login': typeof LoginRoute
+  '/register': typeof RegisterRoute
+  '/teamRoster': typeof TeamRosterRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/bhvr'
+  fullPaths: '/' | '/login' | '/register' | '/teamRoster'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/bhvr'
-  id: '__root__' | '/' | '/bhvr'
+  to: '/' | '/login' | '/register' | '/teamRoster'
+  id: '__root__' | '/' | '/login' | '/register' | '/teamRoster'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  BhvrRoute: typeof BhvrRoute
+  LoginRoute: typeof LoginRoute
+  RegisterRoute: typeof RegisterRoute
+  TeamRosterRoute: typeof TeamRosterRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/bhvr': {
-      id: '/bhvr'
-      path: '/bhvr'
-      fullPath: '/bhvr'
-      preLoaderRoute: typeof BhvrRouteImport
+    '/teamRoster': {
+      id: '/teamRoster'
+      path: '/teamRoster'
+      fullPath: '/teamRoster'
+      preLoaderRoute: typeof TeamRosterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/register': {
+      id: '/register'
+      path: '/register'
+      fullPath: '/register'
+      preLoaderRoute: typeof RegisterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/login': {
+      id: '/login'
+      path: '/login'
+      fullPath: '/login'
+      preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -70,7 +104,9 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  BhvrRoute: BhvrRoute,
+  LoginRoute: LoginRoute,
+  RegisterRoute: RegisterRoute,
+  TeamRosterRoute: TeamRosterRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

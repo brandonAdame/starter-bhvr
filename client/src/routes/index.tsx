@@ -1,73 +1,95 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useState } from "react";
-import beaver from "@/assets/beaver.svg";
+import PreviousGames from "@/components/cards/info-cards/previousGames";
+import Standings from "@/components/standings";
 import { Button } from "@/components/ui/button";
-import { hcWithType } from "server/dist/client";
-import { useMutation } from "@tanstack/react-query";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { createFileRoute } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const SERVER_URL = import.meta.env.VITE_SERVER_URL || "http://localhost:3000";
-
-const client = hcWithType(SERVER_URL);
-
-type ResponseType = Awaited<ReturnType<typeof client.hello.$get>>;
-
 function Index() {
-  const [data, setData] = useState<
-    Awaited<ReturnType<ResponseType["json"]>> | undefined
-  >();
-
-  const { mutate: sendRequest } = useMutation({
-    mutationFn: async () => {
-      try {
-        const res = await client.hello.$get();
-        if (!res.ok) {
-          console.log("Error fetching data");
-          return;
-        }
-        const data = await res.json();
-        setData(data);
-      } catch (error) {
-        console.log(error);
-      }
-    },
-  });
-
   return (
-    <div className="max-w-xl mx-auto flex flex-col gap-6 items-center justify-center min-h-screen">
-      <a
-        href="https://github.com/stevedylandev/bhvr"
-        target="_blank"
-        rel="noopener"
-      >
-        <img
-          src={beaver}
-          className="w-16 h-16 cursor-pointer"
-          alt="beaver logo"
-        />
-      </a>
-      <h1 className="text-5xl font-black">bhvr</h1>
-      <h2 className="text-2xl font-bold">Bun + Hono + Vite + React</h2>
-      <p>A typesafe fullstack monorepo</p>
-      <div className="flex items-center gap-4">
-        <Button onClick={() => sendRequest()}>Call API</Button>
-        <Button variant="secondary" asChild>
-          <a target="_blank" href="https://bhvr.dev" rel="noopener">
-            Docs
-          </a>
-        </Button>
+    <div className="flex flex-col gap-6 items-center">
+      <h1 className="text-4xl">LeagueOne</h1>
+      <div className="flex flex-col gap-6 w-3/4">
+        <div className="flex justify-between gap-4">
+          <Card className="w-1/3">
+            <CardHeader>
+              <CardTitle className="mx-auto text-xl">
+                Your Upcoming Games
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-3 mx-auto">
+              <div className="grid grid-cols-3 items-center">
+                <span className="text-right">Pachuca</span>
+                <span className="text-center">vs</span>
+                <span className="text-left">America</span>
+              </div>
+              <div className="grid grid-cols-3 items-center">
+                <span className="text-right">America</span>
+                <span className="text-center">vs</span>
+                <span className="text-left">Xolos</span>
+              </div>
+              <div className="grid grid-cols-3 items-center">
+                <span className="text-right">America</span>
+                <span className="text-center">vs</span>
+                <span className="text-left">Cruz Azul</span>
+              </div>
+            </CardContent>
+            <CardFooter className="flex justify-end">
+              <Button variant={"outline"}>View more</Button>
+            </CardFooter>
+          </Card>
+          <PreviousGames />
+          <Card className="w-1/3">
+            <CardHeader>
+              <CardTitle className="text-xl">Team Roster</CardTitle>
+            </CardHeader>
+            <CardContent className="flex flex-col gap-3">
+              <span>Goalkeepers: Ochoa, Marchesin</span>
+              <span>Defenders: Aguilar, Layun, Sanchez</span>
+              <span>Midfielders: Rodriguez, Caceres, Dos Santos</span>
+              <span>Forwards: Henry, Martin, Lainez</span>
+            </CardContent>
+          </Card>
+        </div>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="mx-auto text-2xl">
+              Upcoming League Matches
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="flex flex-col gap-4">
+              <div className="grid grid-cols-3 gap-4 items-center">
+                <span className="text-right">Pachuca</span>
+                <span className="text-center">vs</span>
+                <span className="text-left">America</span>
+              </div>
+              <div className="grid grid-cols-3 gap-4 items-center">
+                <span className="text-right">America</span>
+                <span className="text-center">vs</span>
+                <span className="text-left">Toluca</span>
+              </div>
+              <div className="grid grid-cols-3 gap-4 items-center">
+                <span className="text-right">Xolos</span>
+                <span className="text-center">vs</span>
+                <span className="text-left">America</span>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Standings />
       </div>
-      {data && (
-        <pre className="bg-gray-100 p-4 rounded-md">
-          <code>
-            Message: {data.message} <br />
-            Success: {data.success.toString()}
-          </code>
-        </pre>
-      )}
     </div>
   );
 }
