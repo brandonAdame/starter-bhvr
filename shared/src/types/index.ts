@@ -10,6 +10,15 @@ export type Team = {
   team_name: string;
 };
 
+export type User = {
+  id: string;
+  email: string;
+  phone_number: string;
+  verified: boolean;
+  name: string;
+  avatar: string;
+};
+
 export type StandingsData = {
   club: string;
   logo?: string;
@@ -23,15 +32,26 @@ export type StandingsData = {
   Pts: number;
 };
 
-export type RosterMember = {
-  phone_number: string;
-  player_email: string;
-  player_name: string;
-  player_position: string;
+export type RosterView = {
+  id: string;
+  user_id: string;
+  team_id: string;
   player_number: number;
+  player_position: string;
+  name: string;
+  email: string;
+  phone_number: string;
+  team_name: string;
+};
+
+export type RosterMember = {
+  id: string;
+  user_id: string;
+  team: string;
+  player_number: number;
+  player_position: string;
   player_photo: string;
-  team: string; // team ID
-  expand?: Team;
+  expand?: { user_id: User };
 };
 
 export type RosterAPIResponse = {

@@ -8,13 +8,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/")({
   component: Index,
 });
 
 function Index() {
+  const navigate = useNavigate();
   return (
     <div className="flex flex-col gap-6 items-center">
       <h1 className="text-4xl">LeagueOne</h1>
@@ -56,8 +57,16 @@ function Index() {
               <span>Goalkeepers: Ochoa, Marchesin</span>
               <span>Defenders: Aguilar, Layun, Sanchez</span>
               <span>Midfielders: Rodriguez, Caceres, Dos Santos</span>
-              <span>Forwards: Henry, Martin, Lainez</span>
+              <span>Forwards: Martin, Lainez</span>
             </CardContent>
+            <CardFooter className="flex justify-end">
+              <Button
+                variant={"outline"}
+                onClick={() => navigate({ to: "/teamRoster" })}
+              >
+                View Roster
+              </Button>
+            </CardFooter>
           </Card>
         </div>
 

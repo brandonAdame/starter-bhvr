@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import type { Post, RosterMember } from "@shared/types";
+import type { Post, RosterView } from "@shared/types";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import DataTable from "@/components/table-components/data-table";
 import { teamRosterColumns } from "@/components/table-components/columns";
@@ -57,7 +57,8 @@ function AnimatedCard({ post, index }: { post: Post; index: number }) {
 }
 
 function RouteComponent() {
-  const { pb } = useAuth();
+  const { pb, userTeamId } = useAuth();
+
   const { data: postData } = useSuspenseQuery<Post[]>({
     queryKey: ["posts"],
     queryFn: async () => {
@@ -71,9 +72,12 @@ function RouteComponent() {
   const { data: teamData } = useSuspenseQuery({
     queryKey: ["teamRoster"],
     queryFn: async () => {
+      const id = await userTeamId();
+
+      if (!id) return [];
       return await pb
-        .collection("team_roster")
-        .getFullList<RosterMember>({ sort: "player_position" });
+        .collection("roster_view")
+        .getFullList<RosterView>({ filter: `team_id = "${id}"` });
     },
   });
 

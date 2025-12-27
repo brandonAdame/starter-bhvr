@@ -1,5 +1,5 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { RosterMember, StandingsData } from "@shared/types";
+import { RosterView, StandingsData } from "@shared/types";
 
 export const standingsColumns: ColumnDef<StandingsData>[] = [
   {
@@ -43,7 +43,7 @@ export const standingsColumns: ColumnDef<StandingsData>[] = [
   },
 ];
 
-export const teamRosterColumns: ColumnDef<RosterMember>[] = [
+export const teamRosterColumns: ColumnDef<RosterView>[] = [
   {
     accessorKey: "player_position",
     header: "Position",
@@ -53,11 +53,11 @@ export const teamRosterColumns: ColumnDef<RosterMember>[] = [
     header: "Number",
   },
   {
-    accessorKey: "player_name",
+    accessorKey: "name",
     header: "Name",
   },
   {
-    accessorKey: "player_email",
+    accessorKey: "email",
     header: "Email",
   },
   {
