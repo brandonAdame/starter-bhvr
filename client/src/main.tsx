@@ -3,7 +3,6 @@ import ReactDOM from "react-dom/client";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import "./index.css";
-import { apiClient } from "./client/axiosClient";
 import { Toaster } from "sonner";
 
 const queryClient = new QueryClient();
@@ -18,9 +17,8 @@ const router = createRouter({
   routeTree,
   context: {
     queryClient,
-    apiClient,
-    auth: undefined! // Will be set by InnerApp
-  }
+    auth: undefined!, // Will be set by InnerApp
+  },
 });
 
 // Register the router instance for type safety
@@ -30,7 +28,6 @@ declare module "@tanstack/react-router" {
   }
   interface RouterContext {
     queryClient: QueryClient;
-    apiClient: typeof apiClient;
     auth: {
       isAuthenticated: boolean;
       user: any;
@@ -56,12 +53,11 @@ function InnerApp() {
       router={router}
       context={{
         queryClient,
-        apiClient,
         auth: {
           isAuthenticated: auth.isAuthenticated,
           user: auth.user,
           isLoading: auth.isLoading,
-        }
+        },
       }}
     />
   );
