@@ -1,5 +1,5 @@
 import { RosterView, User } from "@shared/types";
-import PocketBase, { AuthRecord } from "pocketbase";
+import PocketBase, { AuthRecord, ClientResponseError } from "pocketbase";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const pb = new PocketBase("http://127.0.0.1:8090");
@@ -70,16 +70,17 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     try {
       const teamData = await pb
         .collection("roster_view")
-        .getFirstListItem<RosterView>(`user_id = "${user.id}"`, {
-          requestKey: null,
-        });
+        .getFirstListItem<RosterView>(`user_id = "${user.id}"`);
 
       if (teamData !== null) {
         return teamData.team_id;
       }
       return null;
     } catch (error) {
-      console.error("Error fetching team ID:", error);
+      if (error instanceof ClientResponseError && error.status !== 404) {
+        console.error("Error fetching team ID:", error);
+        throw error;
+      }
       return null;
     }
   };
