@@ -1,4 +1,4 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import type { Post, RosterView } from "@shared/types";
@@ -6,6 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import DataTable from "@/components/table-components/data-table";
 import { teamRosterColumns } from "@/components/table-components/columns";
 import { useAuth } from "@/components/contexts/AuthContext";
+import { is } from "zod/v4/locales";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const Route = createFileRoute("/_authenticated/teamRoster")({
   component: RouteComponent,
@@ -69,7 +71,7 @@ function RouteComponent() {
     },
   });
 
-  const { data: teamData } = useSuspenseQuery({
+  const { data: teamData, isLoading } = useQuery({
     queryKey: ["teamRoster"],
     queryFn: async () => {
       const id = await userTeamId();
@@ -83,9 +85,15 @@ function RouteComponent() {
 
   return (
     <div className="w-full flex justify-center">
-      <div className="flex flex-col items-center gap-10 pt-10 font-monsterrat">
+      <div className="flex flex-col items-center gap-10 pt-10 font-monsterrat w-full max-w-5xl">
         <h1 className="text-4xl">Team Roster</h1>
-        <DataTable columns={teamRosterColumns} data={teamData} />
+        <div className="w-full">
+          {isLoading ? (
+            <Skeleton className="h-64 rounded-xl" />
+          ) : (
+            <DataTable columns={teamRosterColumns} data={teamData ?? []} />
+          )}
+        </div>
       </div>
     </div>
   );

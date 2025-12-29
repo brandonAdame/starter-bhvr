@@ -3,6 +3,7 @@ import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
 import path from "node:path";
 import { tanstackRouter } from "@tanstack/router-plugin/vite";
+import { devtools } from "@tanstack/devtools-vite";
 
 export default defineConfig({
   plugins: [
@@ -11,6 +12,7 @@ export default defineConfig({
       target: "react",
       autoCodeSplitting: true,
     }),
+    devtools(),
     react(),
     tailwindcss(),
   ],

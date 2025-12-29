@@ -1,8 +1,8 @@
-import { Spinner } from "@/components/ui/spinner";
 import { QueryClient } from "@tanstack/react-query";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
-import { Suspense } from "react";
+import { TanStackDevtools } from "@tanstack/react-devtools";
+import { ReactQueryDevtoolsPanel } from "@tanstack/react-query-devtools";
+import { TanStackRouterDevtoolsPanel } from "@tanstack/react-router-devtools";
 
 type RootContext = {
   queryClient: QueryClient;
@@ -15,17 +15,22 @@ type RootContext = {
 
 export const Route = createRootRouteWithContext<RootContext>()({
   component: () => (
-    <Suspense
-      fallback={
-        <div>
-          <Spinner className="size-8 text-green-500" />
-        </div>
-      }
-    >
-      <>
-        <Outlet />
-        <TanStackRouterDevtools position={"bottom-right"} />
-      </>
-    </Suspense>
+    <>
+      <Outlet />
+      <TanStackDevtools
+        plugins={[
+          {
+            name: "TanStack Query",
+            render: <ReactQueryDevtoolsPanel />,
+            defaultOpen: true,
+          },
+          {
+            name: "TanStack Router",
+            render: <TanStackRouterDevtoolsPanel />,
+            defaultOpen: false,
+          },
+        ]}
+      />
+    </>
   ),
 });
