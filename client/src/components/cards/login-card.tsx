@@ -23,6 +23,8 @@ export default function LoginCard() {
       password: "",
     },
     validators: {
+      onBlur: LoginSchema,
+      onChange: LoginSchema,
       onSubmit: LoginSchema,
     },
     onSubmit: async ({ value }) => {
@@ -36,6 +38,7 @@ export default function LoginCard() {
       }
     },
   });
+
   return (
     <Card className="w-[400px]">
       <CardHeader className="text-center font-semibold text-2xl">
@@ -52,15 +55,6 @@ export default function LoginCard() {
           <FieldGroup>
             <form.Field
               name="email"
-              validators={{
-                onBlur: ({ value }) => {
-                  if (!value) return "Email is required";
-                  const result = z.email().safeParse(value);
-                  return !result.success
-                    ? result.error.issues[0].message
-                    : undefined;
-                },
-              }}
               children={(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
@@ -79,11 +73,7 @@ export default function LoginCard() {
                       type="email"
                     />
                     {isInvalid && (
-                      <FieldError
-                        errors={field.state.meta.errors.map((err) =>
-                          typeof err === "string" ? { message: err } : err
-                        )}
-                      />
+                      <FieldError errors={field.state.meta.errors} />
                     )}
                   </Field>
                 );
@@ -91,15 +81,6 @@ export default function LoginCard() {
             />
             <form.Field
               name="password"
-              validators={{
-                onBlur: ({ value }) => {
-                  if (!value) return "Password is required";
-                  const result = z.string().min(8).safeParse(value);
-                  return !result.success
-                    ? result.error.issues[0].message
-                    : undefined;
-                },
-              }}
               children={(field) => {
                 const isInvalid =
                   field.state.meta.isTouched && !field.state.meta.isValid;
@@ -117,11 +98,7 @@ export default function LoginCard() {
                       type="password"
                     />
                     {isInvalid && (
-                      <FieldError
-                        errors={field.state.meta.errors.map((err) =>
-                          typeof err === "string" ? { message: err } : err
-                        )}
-                      />
+                      <FieldError errors={field.state.meta.errors} />
                     )}
                   </Field>
                 );
@@ -131,23 +108,27 @@ export default function LoginCard() {
         </form>
       </CardContent>
       <CardFooter>
-        <Field orientation={"horizontal"}>
-          <Button
-            className="cursor-pointer"
-            variant={"outline"}
-            onClick={() => form.reset()}
-          >
-            Reset
-          </Button>
-          <Button
-            className="cursor-pointer"
-            type="submit"
-            form="login-form"
-            disabled={form.state.isSubmitting || !form.state.isFormValid}
-          >
-            Login
-          </Button>
-        </Field>
+        <form.Subscribe
+          selector={(state) => [
+            state.canSubmit,
+            state.isSubmitting,
+            state.isDirty,
+          ]}
+          children={([canSubmit, isSubmitting, isDirty]) => (
+            <Field orientation={"horizontal"}>
+              <Button variant={"outline"} onClick={() => form.reset()}>
+                Reset
+              </Button>
+              <Button
+                type="submit"
+                form="login-form"
+                disabled={!canSubmit || isSubmitting || !isDirty}
+              >
+                Login
+              </Button>
+            </Field>
+          )}
+        />
       </CardFooter>
     </Card>
   );

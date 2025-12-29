@@ -10,10 +10,18 @@ const queryClient = new QueryClient();
 
 // Import the generated route tree
 import { routeTree } from "./routeTree.gen";
-import { AuthProvider } from "./components/contexts/AuthContext";
+import { AuthProvider, useAuth } from "./components/contexts/AuthContext";
+import { AuthModalProvider } from "./components/contexts/AuthModalContext";
 
 // Create a new router instance
-const router = createRouter({ routeTree, context: { queryClient, apiClient } });
+const router = createRouter({
+  routeTree,
+  context: {
+    queryClient,
+    apiClient,
+    auth: undefined! // Will be set by InnerApp
+  }
+});
 
 // Register the router instance for type safety
 declare module "@tanstack/react-router" {
@@ -23,7 +31,40 @@ declare module "@tanstack/react-router" {
   interface RouterContext {
     queryClient: QueryClient;
     apiClient: typeof apiClient;
+    auth: {
+      isAuthenticated: boolean;
+      user: any;
+      isLoading: boolean;
+    };
   }
+}
+
+function InnerApp() {
+  const auth = useAuth();
+
+  // Show loading state while validating auth
+  if (auth.isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-lg">Loading...</div>
+      </div>
+    );
+  }
+
+  return (
+    <RouterProvider
+      router={router}
+      context={{
+        queryClient,
+        apiClient,
+        auth: {
+          isAuthenticated: auth.isAuthenticated,
+          user: auth.user,
+          isLoading: auth.isLoading,
+        }
+      }}
+    />
+  );
 }
 
 const rootElement = document.getElementById("root");
@@ -40,10 +81,12 @@ if (!rootElement.innerHTML) {
   root.render(
     <StrictMode>
       <AuthProvider>
-        <QueryClientProvider client={queryClient}>
-          <RouterProvider router={router} />
-          <Toaster />
-        </QueryClientProvider>
+        <AuthModalProvider>
+          <QueryClientProvider client={queryClient}>
+            <InnerApp />
+            <Toaster />
+          </QueryClientProvider>
+        </AuthModalProvider>
       </AuthProvider>
     </StrictMode>
   );

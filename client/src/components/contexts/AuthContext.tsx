@@ -1,26 +1,43 @@
-import { RosterView } from "@shared/types";
+import { RosterView, User } from "@shared/types";
 import PocketBase, { AuthRecord } from "pocketbase";
 import { createContext, useContext, useEffect, useState } from "react";
 
 const pb = new PocketBase("http://127.0.0.1:8090");
 
+type UserAuthRecord = AuthRecord & Omit<User, "id">;
+
 type AuthContextType = {
-  user: AuthRecord | null;
+  user: UserAuthRecord | null;
   userTeamId: () => Promise<string | null>;
   token: string | null;
   login: (email: string, password: string) => Promise<any>;
   logout: () => void;
   pb: PocketBase;
   isAuthenticated: boolean;
+  isLoading: boolean;
 };
 
 const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<AuthRecord | null>(pb.authStore.record);
+  const [user, setUser] = useState<any | null>(pb.authStore.record);
   const [token, setToken] = useState<string | null>(pb.authStore.token);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    // Check if we have a valid stored token
+    if (pb.authStore.isValid) {
+      // Token exists and is not expired, use it
+      setUser(pb.authStore.record);
+      setToken(pb.authStore.token);
+    } else {
+      // Token is expired or doesn't exist, clear everything
+      pb.authStore.clear();
+      setUser(null);
+      setToken(null);
+    }
+    setIsLoading(false);
+
     // Subscribe to auth store changes
     return pb.authStore.onChange(() => {
       setToken(pb.authStore.token);
@@ -81,6 +98,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     logout,
     pb, // Expose pb instance for making requests
     isAuthenticated: !!token,
+    isLoading,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

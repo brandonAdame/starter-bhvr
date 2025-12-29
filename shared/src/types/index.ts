@@ -13,10 +13,10 @@ export type Team = {
 export type User = {
   id: string;
   email: string;
-  phone_number: string;
+  phone_number?: string;
   verified: boolean;
   name: string;
-  avatar: string;
+  avatar?: string;
 };
 
 export type StandingsData = {

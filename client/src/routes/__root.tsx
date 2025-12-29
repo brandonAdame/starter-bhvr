@@ -8,6 +8,11 @@ import { apiClient } from "@/client/axiosClient";
 type RootContext = {
   queryClient: QueryClient;
   apiClient: typeof apiClient;
+  auth: {
+    isAuthenticated: boolean;
+    user: any;
+    isLoading: boolean;
+  };
 };
 
 export const Route = createRootRouteWithContext<RootContext>()({
@@ -20,10 +25,8 @@ export const Route = createRootRouteWithContext<RootContext>()({
       }
     >
       <>
-        <main className="font-monsterrat pt-5">
-          <Outlet />
-        </main>
-        <TanStackRouterDevtools />
+        <Outlet />
+        <TanStackRouterDevtools position={"bottom-right"} />
       </>
     </Suspense>
   ),

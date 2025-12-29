@@ -7,7 +7,7 @@ import DataTable from "@/components/table-components/data-table";
 import { teamRosterColumns } from "@/components/table-components/columns";
 import { useAuth } from "@/components/contexts/AuthContext";
 
-export const Route = createFileRoute("/teamRoster")({
+export const Route = createFileRoute("/_authenticated/teamRoster")({
   component: RouteComponent,
 });
 
@@ -82,13 +82,9 @@ function RouteComponent() {
   });
 
   return (
-    <div className="flex flex-col items-center justify-center gap-10 pt-10 font-monsterrat">
-      <h1 className="text-4xl">Team Roster</h1>
-      <div className="w-3/4">
-        {/* <h2 className="text-2xl mb-4">Posts</h2>
-        {postData.map((post, index) => (
-          <AnimatedCard key={post.id} post={post} index={index} />
-        ))} */}
+    <div className="w-full flex justify-center">
+      <div className="flex flex-col items-center gap-10 pt-10 font-monsterrat">
+        <h1 className="text-4xl">Team Roster</h1>
         <DataTable columns={teamRosterColumns} data={teamData} />
       </div>
     </div>
